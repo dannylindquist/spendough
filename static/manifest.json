@@ -1,0 +1,7 @@
+{
+  "name": "Spendough",
+  "short_name": "Spendough",
+  "start_url": "/",
+  "display": "standalone",
+  "description": "Track your expenses."
+}
