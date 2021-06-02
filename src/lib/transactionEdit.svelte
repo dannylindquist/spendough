@@ -24,16 +24,61 @@
         body: JSON.stringify(object),
       }
     );
-    goto("/");
+    let url = new URL(location.href);
+    console.log(url);
+    if (url.searchParams.has("previous")) {
+      goto(url.searchParams.get("previous"));
+    } else {
+      //goto("/");
+    }
+  }
+
+  async function deleteSubmit(e) {
+    let res = await fetch(e.target.action, {
+      method: e.target.method,
+    });
+    let url = new URL(location.href);
+    if (url.searchParams.has("previous")) {
+      goto(url.searchParams.get("previous"));
+    } else {
+      goto("/");
+    }
   }
 </script>
 
-<div>
+<div class="flex">
+  <div class="flex-1" />
   <h2 class="font-medium text-lg text-center">Edit Transaction</h2>
+  <div class="flex-1">
+    <form
+      on:submit|preventDefault={deleteSubmit}
+      action={`/transactions/${transaction.id}.json?_method=delete`}
+      method="post"
+    >
+      <div class="text-right">
+        <button aria-label="Delete transactions">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 <form
   on:submit|preventDefault={formSubmit}
-  action={`/transactions/${transaction.id}`}
+  action={`/transactions/${transaction.id}.json?_method=patch`}
   method="post"
 >
   <label class="pt-2 block">

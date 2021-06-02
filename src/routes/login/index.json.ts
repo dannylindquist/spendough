@@ -13,42 +13,48 @@ export const post: RequestHandler<Locals, FormData> = async (request) => {
       return {
         status: 401,
         body: {
-          error: "Invalid email or password",
+          data: {
+            error: "Invalid email or password",
+          },
         },
       };
     }
     let valid = await bcrypt.compare(password, user.password);
     if (valid) {
+      let token = jwt.sign({ userId: user.id }, process.env["COOKIE_KEY"]);
       if (
         request.method !== "GET" &&
         request.headers.accept !== "application/json"
       ) {
-        console.log("redirect");
         let date = new Date();
         return {
           status: 303,
           headers: {
+            "set-cookie": `token=${token}; path=/; max-age=2592000; same-site=strict;  HttpOnly`,
             location: `/${date.getFullYear()}${(date.getMonth() + 1)
               .toString()
               .padStart(2, "0")}`,
           },
         };
       }
-      let token = jwt.sign({ userId: user.id }, process.env["COOKIE_KEY"]);
       return {
         status: 200,
         headers: {
           "set-cookie": `token=${token}; path=/; max-age=2592000; same-site=strict;  HttpOnly`,
         },
         body: {
-          data: "success",
+          data: {
+            message: "success",
+          },
         },
       };
     }
     return {
       status: 401,
       body: {
-        error: "Invalid email or password",
+        data: {
+          error: "Invalid email or password",
+        },
       },
     };
   }

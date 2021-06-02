@@ -20,12 +20,17 @@
       },
       body: JSON.stringify(object),
     });
-    goto("/");
+    let url = new URL(location.href);
+    if (url.searchParams.has("previous")) {
+      goto(url.searchParams.get("previous"));
+    } else {
+      goto("/");
+    }
   }
 </script>
 
 <div>
-  <h2 class="font-medium text-lg text-center">Edit Transaction</h2>
+  <h2 class="font-medium text-lg text-center">Create Transaction</h2>
 </div>
 <form
   on:submit|preventDefault={formSubmit}
@@ -84,7 +89,7 @@
     <input
       class="px-5 py-3 bg-green-500 border mt-2 text-white shadow-lg rounded-lg text-center focus:outline-none focus:ring ring-yellow-300"
       type="submit"
-      value="Update"
+      value="Create"
     />
   </div>
 </form>

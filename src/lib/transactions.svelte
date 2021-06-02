@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Category, Transaction } from "@prisma/client";
   import { moneyFormatter } from "$lib/formatter";
+  export let monthKey: number;
   export let transactions: Record<
     string,
     (Transaction & {
@@ -17,8 +18,8 @@
   <div class="divide-y bg-white shadow-md mb-8 rounded-lg">
     {#each transactions[group] as transaction}
       <a
-        class="flex py-4 px-3 items-center"
-        href={`/transactions/${transaction.id}/edit`}
+        class="flex py-4 px-4 items-center"
+        href={`/transactions/${transaction.id}/edit?previous=/${monthKey}`}
       >
         <div class="flex-1">
           <span class="block font-medium leading-none py-1 text-gray-700">

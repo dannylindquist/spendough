@@ -1,7 +1,33 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import * as Prisma from "@prisma/client";
+//|| Prisma.default.PrismaClient
+let prisma = new Prisma.PrismaClient();
 
 export default prisma;
+
+export async function createUser(email: string, password: string) {
+  try {
+    let user = await prisma.user.create({
+      data: {
+        email,
+        password,
+        Category: {
+          createMany: {
+            data: [
+              { description: "Groceries" },
+              { description: "Utilties" },
+              { description: "Eat Out" },
+              { description: "Fun" },
+            ],
+          },
+        },
+      },
+    });
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+}
 
 export async function getUserByEmail(email: string) {
   try {
@@ -121,4 +147,19 @@ export async function createTransaction(userId: number, transaction) {
     console.log(error);
   }
   return null;
+}
+
+export async function deleteTransaction(userId: number, transactionId: number) {
+  try {
+    let { count } = await prisma.transaction.deleteMany({
+      where: {
+        id: transactionId,
+        userId,
+      },
+    });
+    return count == 1;
+  } catch (error) {
+    console.log(error);
+  }
+  return false;
 }

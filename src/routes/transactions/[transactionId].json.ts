@@ -1,6 +1,10 @@
 import type { Locals } from "$lib/types";
 import type { RequestHandler } from "@sveltejs/kit";
-import { getUserTransaction, updateTransaction } from "$lib/db";
+import {
+  getUserTransaction,
+  updateTransaction,
+  deleteTransaction,
+} from "$lib/db";
 
 export const get: RequestHandler<Locals> = async (request) => {
   if (!request.locals || !request.locals.userId) {
@@ -22,8 +26,38 @@ export const get: RequestHandler<Locals> = async (request) => {
   };
 };
 
+export const del: RequestHandler<Locals> = async (request) => {
+  if (!request.locals || !request.locals.userId) {
+    return {
+      status: 404,
+      body: {
+        error: "Not Authenticated",
+      },
+    };
+  }
+
+  let result = await deleteTransaction(
+    request.locals.userId,
+    +request.params.transactionId
+  );
+  if (result) {
+    return {
+      status: 200,
+      body: {
+        data: "Successfully deleted",
+      },
+    };
+  } else {
+    return {
+      status: 500,
+      body: {
+        data: "Couldn't delete",
+      },
+    };
+  }
+};
+
 export const patch: RequestHandler<Locals> = async (request) => {
-  console.log(request.rawBody);
   if (!request.locals || !request.locals.userId) {
     return {
       status: 404,

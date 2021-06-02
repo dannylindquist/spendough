@@ -20,6 +20,7 @@
     return {
       props: {
         transactions: transactions.data,
+        monthKey: +page.params.monthKey,
       },
     };
   };
@@ -36,9 +37,15 @@
     };
   })[];
   export let categories: Category[];
-
+  export let monthKey;
+  $: date = new Date(
+    +String(monthKey).substr(0, 4),
+    +String(monthKey).substr(4, 2) - 1,
+    1
+  );
+  $: console.log(date);
   let sortMode: "date" | "category" = "date";
-
+  $: console.log(monthKey);
   $: total = transactions?.reduce((agg, val) => agg + val.amount, 0);
   $: grouped = transactions?.reduce((agg, val) => {
     if (sortMode === "date") {
@@ -57,9 +64,38 @@
   }, {});
 </script>
 
+<svelte:head>
+  <title>
+    Spendough - {date.toLocaleDateString("default", {
+      month: "short",
+      year: "numeric",
+    })}
+  </title>
+</svelte:head>
+
 <div class="max-w-lg mx-auto pt-4">
   <div class="flex items-center mb-6">
-    <div class="flex-1">month</div>
+    <div class="flex-1 flex items-center space-x-1">
+      <div>
+        {date.toLocaleDateString("default", { month: "short" })}
+        <br />
+        {date.getFullYear()}
+      </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </div>
     <div class="text-center">
       <span
         class="block font-black uppercase tracking-widest text-xs text-gray-500"
@@ -72,7 +108,7 @@
     </div>
     <div class="flex-1 text-right">
       <a
-        href="/transactions/new"
+        href={`/transactions/new?previous=/${monthKey}`}
         class="bg-white rounded-xl p-3 shadow-md inline-block"
         aria-label="Create transaction"
       >
@@ -93,5 +129,5 @@
       </a>
     </div>
   </div>
-  <Transactions transactions={grouped} />
+  <Transactions transactions={grouped} {monthKey} />
 </div>
