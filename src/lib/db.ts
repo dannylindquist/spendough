@@ -1,4 +1,4 @@
-import * as Prisma from "@prisma/client";
+import { default as Prisma } from "@prisma/client";
 //|| Prisma.default.PrismaClient
 let prisma = new Prisma.PrismaClient();
 
