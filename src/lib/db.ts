@@ -116,6 +116,7 @@ export async function updateTransaction(
   transaction
 ) {
   try {
+    transaction.amount = parseInt(transaction.amount);
     let tran = await prisma.transaction.updateMany({
       where: {
         id: transactionId,
@@ -132,6 +133,7 @@ export async function updateTransaction(
 
 export async function createTransaction(userId: number, transaction) {
   try {
+    transaction.amount = parseInt(transaction.amount);
     let tran = await prisma.transaction.create({
       data: {
         amount: transaction.amount,
